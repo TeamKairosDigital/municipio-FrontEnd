@@ -1,0 +1,19 @@
+<div class="card">
+    <p-table [value]="documentos" [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '50rem' }"
+        [rowsPerPageOptions]="[5, 10, 20]">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width:25%">Documento</th>
+                <th style="width:25%">Ley</th>
+                <th style="width:25%">Categoría</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-documento>
+            <tr>
+                <td>{{ documento.nombreDocumento }}</td>
+                <td>{{ documento.ley }}</td>
+                <td>{{ documento.categoria }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
