@@ -1,19 +1,130 @@
+<app-side-bar></app-side-bar>
 <div class="card">
-    <p-table [value]="documentos" [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '50rem' }"
-        [rowsPerPageOptions]="[5, 10, 20]">
+    <h2 class="font-size: 4rem">SEVAC</h2>
+</div>
+
+<div class="card">
+    <p-table [value]="documentos" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
+        [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-striped" [sortOrder]="-1"
+        currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} datos" (onPage)="pageChange($event)"
+        [rowsPerPageOptions]="[5, 10, 15]">
+
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-around">
+                <div>
+                    <h3 class="m-0">Administración de documentos</h3>
+                </div>
+
+                <div class="flex align-items-center justify-content-center w-6">
+                    <div>
+                        <label for="inventoryStatus" class="m-2">Año:</label>
+                        <p-dropdown [options]="years" [(ngModel)]="selectedYear" optionLabel="viewValue"
+                            placeholder="Selecciona un año" (onChange)="onChange($event, 'year')" />
+                    </div>
+
+                    <div>
+                        <label for="inventoryStatus" class="m-2">Ley:</label>
+                        <p-dropdown [options]="leyes" [(ngModel)]="selectedLey" optionLabel="viewValue"
+                            placeholder="Selecciona un año" (onChange)="onChange($event, 'leyes')" />
+                    </div>
+
+                </div>
+
+            </div>
+        </ng-template>
+
+        <!-- Header -->
         <ng-template pTemplate="header">
             <tr>
-                <th style="width:25%">Documento</th>
-                <th style="width:25%">Ley</th>
-                <th style="width:25%">Categoría</th>
+                <th style="width:25%" pSortableColumn="nombreDocumento">Documento <p-sortIcon field="nombreDocumento" />
+                </th>
+                <th style="width:10%" pSortableColumn="ley">Ley <p-sortIcon field="nombreDocumento" /></th>
+                <th style="width:20%" pSortableColumn="categoria">Categoría <p-sortIcon field="nombreDocumento" /></th>
+                <ng-container *ngFor="let period of periods">
+                    <th>{{ period.nombrePeriodo }}</th>
+                </ng-container>
             </tr>
         </ng-template>
+
+        <!-- Body -->
         <ng-template pTemplate="body" let-documento>
             <tr>
                 <td>{{ documento.nombreDocumento }}</td>
                 <td>{{ documento.ley }}</td>
                 <td>{{ documento.categoria }}</td>
+
+                <!-- Dynamic Columns for Periods -->
+                <ng-container *ngFor="let period of periods">
+                    <td>
+                        <ng-container *ngIf="hasFileForPeriod(documento, period.nombrePeriodo)">
+                            <i class="pi pi-check-circle cursor-pointer" style="color: green; font-size: 2rem"
+                                (click)="openFileModal(documento, period, false)"></i>
+                        </ng-container>
+                        <ng-container *ngIf="!hasFileForPeriod(documento, period.nombrePeriodo)">
+                            <i class="pi pi-file cursor-pointer" style="font-size: 2rem"
+                                (click)="openFileModal(documento, period, true)"></i>
+                        </ng-container>
+                    </td>
+                </ng-container>
             </tr>
         </ng-template>
     </p-table>
+
+    <p-dialog [(visible)]="fileDialog" [style]="{ width: '750px' }" header="Detalle de archivo" [modal]="true"
+        styleClass="p-fluid">
+        <ng-template pTemplate="content">
+
+            <div class="field">
+                <label for="name">Nombre del documento:</label>
+                <input id="disabled-input" type="text" pInputText [disabled]="true"
+                    [(ngModel)]="this.archivoSeleccionado.NombreDocumento" />
+            </div>
+
+            <div class="field">
+                <label for="name">Periodo:</label>
+                <input id="disabled-input" type="text" pInputText [disabled]="true"
+                    [(ngModel)]="this.archivoSeleccionado.PeriodoNombre" />
+            </div>
+
+            <div class="field">
+                <label for="name">Año:</label>
+                <input id="disabled-input" type="text" pInputText [disabled]="true"
+                    [(ngModel)]="this.archivoSeleccionado.Anualidad" />
+            </div>
+
+            <div *ngIf="!EsNuevo" class="w-full my-5 flex align-items-center justify-content-around">
+                <p-button label="Eliminar" icon="pi pi-trash" severity="danger" [outlined]="true"
+                    (onClick)="confirmDeleteDocument($event)" />
+                <p-button label="Ver" icon="pi pi-eye" [outlined]="true" (onClick)="verArchivo()" />
+            </div>
+
+            <p-confirmDialog />
+
+            <div *ngIf="EsNuevo">
+                <p-fileUpload mode="basic" chooseLabel="Selecciona tu archivo" chooseIcon="pi pi-upload" name="demo[]"
+                    maxFileSize="20000000" accept=".pdf" (onSelect)="onFileSelect($event)" customUpload="true" />
+            </div>
+
+            <div *ngIf="fileUrl" class="mt-4">
+                <iframe [src]="fileUrl" width="100%" height="900px"></iframe>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+            <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="saveFile()" *ngIf="EsNuevo"
+                [disabled]="isFormValid()" />
+        </ng-template>
+    </p-dialog>
+
+    <!-- <div *ngIf="spinner" class="flex align-items-center absolute z-5">
+        <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+            animationDuration=".5s" />
+    </div> -->
+    <p-toast />
+    <div *ngIf="spinner" class="overlay">
+        <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+            animationDuration=".5s" />
+    </div>
+
 </div>
