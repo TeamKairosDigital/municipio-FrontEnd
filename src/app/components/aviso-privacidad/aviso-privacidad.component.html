@@ -1,0 +1,65 @@
+<app-side-bar></app-side-bar>
+<div class="card">
+    <h2 class="font-size: 4rem">Aviso de privacidad</h2>
+</div>
+
+<div class="card">
+
+    <p-table [value]="listAvisoPrivacidad" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
+        [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-striped" [sortOrder]="-1"
+        currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} datos" (onPage)="pageChange($event)"
+        [rowsPerPageOptions]="[5, 10, 15]">
+
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-around">
+                <div>
+                    <h3 class="m-0">Lista aviso de privacidad</h3>
+                </div>
+                <div>
+                    <i class="pi pi-file cursor-pointer" style="font-size: 2rem" (click)="openFileModal()"></i>
+                </div>
+            </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width:25%" pSortableColumn="nombreDocumento">Nombre <p-sortIcon field="nombreDocumento" />
+                <th style="width:10%" pSortableColumn="ley">fechaCreacion <p-sortIcon field="nombreDocumento" /></th>
+            </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-documento>
+            <tr>
+                <td>{{ documento.nombre }}</td>
+                <td>{{ documento.fechaCreacion }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog [(visible)]="Dialog" [style]="{ width: '750px' }" header="Detalle de archivo" [modal]="true"
+        styleClass="p-fluid">
+        <ng-template pTemplate="content">
+
+            <div class="field">
+                <label for="name">Nombre aviso de privacidad:</label>
+                <input id="disabled-input" type="text" [(ngModel)]="this.createAvisoPrivacidadDto.nombreAvisoPrivacidad"
+                    pInputText />
+            </div>
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+            <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="createAvisoPrivacidad()" />
+        </ng-template>
+    </p-dialog>
+
+    <!-- <p-toast /> -->
+    <div *ngIf="spinner" class="overlay">
+        <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+            animationDuration=".5s" />
+    </div>
+
+</div>
