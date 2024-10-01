@@ -5,6 +5,7 @@ import { ApiResponse } from '../models/ApiResponseDto';
 import { listAvisoPrivacidad } from '../models/listAvisoPrivacidadDto';
 import { filterAvisoPrivacidadDto } from '../models/filterAvisoPrivacidadDto';
 import { createAvisoPrivacidadDto } from '../models/createAvisoPrivacidadDto';
+import { createAvisoPrivacidadArchivoDto } from '../models/createAvisoPrivacidadArchivo';
 
 @Injectable({
   providedIn: 'root'
@@ -20,14 +21,37 @@ export class AvisoPrivacidadService {
   }
 
   createAvisoPrivacidad(data: createAvisoPrivacidadDto): Observable<ApiResponse<any>> {
-    debugger
     return this.http.post<ApiResponse<any>>(`${this.apiUrl}/createAvisoPrivacidad`, data);
   }
 
-  // deleteDocument(id: number): Observable<ApiResponse<any>> {
-  //   return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/${id}`);
-  // }
+  getAvisoPrivacidad(id: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/getAvisoPrivacidad${id}`);
+  }
 
+  editAvisoPrivacidad(data: createAvisoPrivacidadDto): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.apiUrl}/editAvisoPrivacidad`, data);
+  }
+
+  deleteAvisoPrivacidad(id: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/deleteAvisoPrivacidad${id}`);
+  }
+
+
+  createAvisoPrivacidadArchivo(data: createAvisoPrivacidadArchivoDto): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/createAvisoPrivacidadArchivo`, data);
+  }
+
+  getAvisoPrivacidadArchivo(id: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/getAvisoPrivacidadArchivo${id}`);
+  }
+
+  editAvisoPrivacidadArchivo(data: createAvisoPrivacidadDto): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.apiUrl}/editAvisoPrivacidadArchivo`, data);
+  }
+
+  deleteAvisoPrivacidadArchivo(id: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/deleteAvisoPrivacidadArchivo${id}`);
+  }
 
 
 

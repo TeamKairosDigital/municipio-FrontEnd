@@ -5,6 +5,8 @@ import { listAvisoPrivacidad } from '../../models/listAvisoPrivacidadDto';
 import { SideBarComponent } from '../tools/side-bar/side-bar.component';
 import { ImportsModule } from '../../imports';
 import { createAvisoPrivacidadDto } from '../../models/createAvisoPrivacidadDto';
+import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-aviso-privacidad',
@@ -16,8 +18,12 @@ import { createAvisoPrivacidadDto } from '../../models/createAvisoPrivacidadDto'
 export class AvisoPrivacidadComponent {
 
   constructor(
-    private avisoPrivacidadService: AvisoPrivacidadService
+    private avisoPrivacidadService: AvisoPrivacidadService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
   ) { }
+
+  expandedRows: { [key: string]: boolean } = {};
 
   listAvisoPrivacidad: listAvisoPrivacidad[] = [];
   createAvisoPrivacidadDto: createAvisoPrivacidadDto = {
@@ -31,6 +37,7 @@ export class AvisoPrivacidadComponent {
 
   spinner: boolean = false;
   Dialog: boolean = false;
+  DialogArchivo: boolean = false;
 
   first = 0;
   rows = 10;
@@ -44,7 +51,8 @@ export class AvisoPrivacidadComponent {
     // Verificar si el valor existe antes de convertirlo a objeto
     if (userString) {
       const userObject = JSON.parse(userString);
-      console.log(userObject);  // Aquí puedes acceder a las propiedades del objeto
+      this.createAvisoPrivacidadDto.municipality_id = userObject.municipality_id;
+      this.createAvisoPrivacidadDto.usuarioId = userObject.id;
     }
   }
 
@@ -71,11 +79,67 @@ export class AvisoPrivacidadComponent {
     this.Dialog = false;
   }
 
+  hideDialogArchivo() {
+    this.DialogArchivo = false;
+  }
+
   createAvisoPrivacidad(): void {
     this.spinner = true;
+
     this.avisoPrivacidadService.createAvisoPrivacidad(this.createAvisoPrivacidadDto).subscribe((response) => {
       if (response.success) {
-        this.listAvisoPrivacidad = response.data;
+        this.hideDialog();
+        this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
+      }
+      this.spinner = false;
+    });
+  }
+
+  getAvisoPrivacidad(id: number): void {
+
+  }
+
+  confirmDeleteDocument(event: Event, id: number) {
+
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: '¿Quieres eliminar este documento?',
+      header: 'Confirmación de eliminación',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: "p-button-danger p-button-text",
+      rejectButtonStyleClass: "p-button-text p-button-text",
+      acceptIcon: "none",
+      rejectIcon: "none",
+
+      accept: () => {
+        this.deleteDocument(id);
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Cancelado', detail: 'Has cancelado' });
+      }
+    });
+  }
+
+  deleteDocument(id: number) {
+    this.avisoPrivacidadService.deleteAvisoPrivacidad(id).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'info', summary: 'Eliminado', detail: 'Su archivo ha sido eliminado' });
+        this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al eliminar su archivo' });
+        console.error('Error deleting document:', err);
+      }
+    });
+  }
+
+  createAvisoPrivacidadArchivo(): void {
+    this.spinner = true;
+
+    this.avisoPrivacidadService.createAvisoPrivacidad(this.createAvisoPrivacidadDto).subscribe((response) => {
+      if (response.success) {
+        this.hideDialog();
+        this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
       }
       this.spinner = false;
     });

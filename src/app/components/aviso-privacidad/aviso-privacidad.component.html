@@ -5,10 +5,10 @@
 
 <div class="card">
 
-    <p-table [value]="listAvisoPrivacidad" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
-        [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-striped" [sortOrder]="-1"
-        currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} datos" (onPage)="pageChange($event)"
-        [rowsPerPageOptions]="[5, 10, 15]">
+    <p-table [value]="listAvisoPrivacidad" dataKey="id" [paginator]="true" [rows]="5" [first]="first"
+        [showCurrentPageReport]="true" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-striped"
+        [sortOrder]="-1" currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} datos"
+        (onPage)="pageChange($event)" [rowsPerPageOptions]="[5, 10, 15]">
 
         <ng-template pTemplate="caption">
             <div class="flex align-items-center justify-content-around">
@@ -16,7 +16,7 @@
                     <h3 class="m-0">Lista aviso de privacidad</h3>
                 </div>
                 <div>
-                    <i class="pi pi-file cursor-pointer" style="font-size: 2rem" (click)="openFileModal()"></i>
+                    <i class="pi pi-file-plus cursor-pointer" style="font-size: 2rem" (click)="openFileModal()"></i>
                 </div>
             </div>
         </ng-template>
@@ -24,42 +24,104 @@
         <!-- Header -->
         <ng-template pTemplate="header">
             <tr>
-                <th style="width:25%" pSortableColumn="nombreDocumento">Nombre <p-sortIcon field="nombreDocumento" />
-                <th style="width:10%" pSortableColumn="ley">fechaCreacion <p-sortIcon field="nombreDocumento" /></th>
+                <th style="width:5%"></th>
+                <th style="width:25%" pSortableColumn="nombre">Nombre <p-sortIcon field="nombre" />
+                <th style="width:10%" pSortableColumn="fechaCreacion">fechaCreacion <p-sortIcon field="fechaCreacion" />
+                </th>
+                <th>Acciones</th>
             </tr>
         </ng-template>
 
         <!-- Body -->
         <ng-template pTemplate="body" let-documento>
             <tr>
+                <td>
+                    <p-button type="button" pRipple [pRowToggler]="documento" [text]="true" [rounded]="true"
+                        [plain]="true" [icon]="'pi pi-chevron-down' ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+                </td>
                 <td>{{ documento.nombre }}</td>
                 <td>{{ documento.fechaCreacion }}</td>
+                <td>
+                    <p-button label="Editar" icon="pi pi-eye" [outlined]="true"
+                        (onClick)="getAvisoPrivacidad(documento.id)" />
+                    <p-button label="Eliminar" icon="pi pi-trash" severity="danger" [outlined]="true"
+                        (onClick)="confirmDeleteDocument($event, documento.id)" />
+                </td>
+            </tr>
+        </ng-template>
+
+        <!-- Contenido expandido -->
+        <ng-template pTemplate="rowexpansion" let-documento>
+            <tr>
+                <td colspan="7">
+                    <div class="p-3">
+                        <p-table [value]="documento.archivos" dataKey="id">
+                            <ng-template pTemplate="header">
+            <tr>
+                <th>Nombre</th>
+                <th>fechaCreacion</th>
+                <th>Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-archivos>
+            <tr>
+                <td>{{ archivos.nombreArchivo }}</td>
+                <td>{{ archivos.fechaCreacion }}</td>
+                <td><p-button type="button" icon="pi pi-search" /></td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="6">Aún no hay archivos para este aviso de privacidad.</td>
             </tr>
         </ng-template>
     </p-table>
+</div>
+</td>
+</tr>
+</ng-template>
+</p-table>
 
-    <p-dialog [(visible)]="Dialog" [style]="{ width: '750px' }" header="Detalle de archivo" [modal]="true"
-        styleClass="p-fluid">
-        <ng-template pTemplate="content">
+<p-dialog [(visible)]="Dialog" [style]="{ width: '750px' }" header="Detalle de archivo" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
 
-            <div class="field">
-                <label for="name">Nombre aviso de privacidad:</label>
-                <input id="disabled-input" type="text" [(ngModel)]="this.createAvisoPrivacidadDto.nombreAvisoPrivacidad"
-                    pInputText />
-            </div>
+        <div class="field">
+            <label for="name">Nombre aviso de privacidad:</label>
+            <input id="disabled-input" type="text" [(ngModel)]="this.createAvisoPrivacidadDto.nombreAvisoPrivacidad"
+                pInputText />
+        </div>
 
-        </ng-template>
+    </ng-template>
 
-        <ng-template pTemplate="footer">
-            <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
-            <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="createAvisoPrivacidad()" />
-        </ng-template>
-    </p-dialog>
+    <ng-template pTemplate="footer">
+        <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+        <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="createAvisoPrivacidad()" />
+    </ng-template>
+</p-dialog>
 
-    <!-- <p-toast /> -->
-    <div *ngIf="spinner" class="overlay">
-        <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
-            animationDuration=".5s" />
-    </div>
+<p-dialog [(visible)]="DialogArchivo" [style]="{ width: '750px' }" header="Detalle de archivo" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+
+        <div class="field">
+            <label for="name">Nombre aviso de privacidad:</label>
+            <input id="disabled-input" type="text" [(ngModel)]="this.createAvisoPrivacidadDto.nombreAvisoPrivacidad"
+                pInputText />
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+        <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="createAvisoPrivacidad()" />
+    </ng-template>
+</p-dialog>
+
+<!-- <p-toast /> -->
+<div *ngIf="spinner" class="overlay">
+    <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+        animationDuration=".5s" />
+</div>
 
 </div>
