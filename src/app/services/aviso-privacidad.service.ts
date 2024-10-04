@@ -25,7 +25,7 @@ export class AvisoPrivacidadService {
   }
 
   getAvisoPrivacidad(id: number): Observable<ApiResponse<any>> {
-    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/getAvisoPrivacidad${id}`);
+    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/getAvisoPrivacidad/${id}`);
   }
 
   editAvisoPrivacidad(data: createAvisoPrivacidadDto): Observable<ApiResponse<any>> {
@@ -33,7 +33,7 @@ export class AvisoPrivacidadService {
   }
 
   deleteAvisoPrivacidad(id: number): Observable<ApiResponse<any>> {
-    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/deleteAvisoPrivacidad${id}`);
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/deleteAvisoPrivacidad/${id}`);
   }
 
 
@@ -42,7 +42,7 @@ export class AvisoPrivacidadService {
   }
 
   getAvisoPrivacidadArchivo(id: number): Observable<ApiResponse<any>> {
-    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/getAvisoPrivacidadArchivo${id}`);
+    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/getAvisoPrivacidadArchivo/${id}`);
   }
 
   editAvisoPrivacidadArchivo(data: createAvisoPrivacidadDto): Observable<ApiResponse<any>> {
@@ -50,7 +50,7 @@ export class AvisoPrivacidadService {
   }
 
   deleteAvisoPrivacidadArchivo(id: number): Observable<ApiResponse<any>> {
-    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/deleteAvisoPrivacidadArchivo${id}`);
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/deleteAvisoPrivacidadArchivo/${id}`);
   }
 
 

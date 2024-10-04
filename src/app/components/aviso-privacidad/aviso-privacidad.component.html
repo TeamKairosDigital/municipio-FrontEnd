@@ -16,7 +16,8 @@
                     <h3 class="m-0">Lista aviso de privacidad</h3>
                 </div>
                 <div>
-                    <i class="pi pi-file-plus cursor-pointer" style="font-size: 2rem" (click)="openFileModal()"></i>
+                    <i class="pi pi-file-plus cursor-pointer" style="font-size: 2rem"
+                        (click)="getAvisoPrivacidad(0, false)"></i>
                 </div>
             </div>
         </ng-template>
@@ -43,7 +44,7 @@
                 <td>{{ documento.fechaCreacion }}</td>
                 <td>
                     <p-button label="Editar" icon="pi pi-eye" [outlined]="true"
-                        (onClick)="getAvisoPrivacidad(documento.id)" />
+                        (onClick)="getAvisoPrivacidad(documento.id, false)" />
                     <p-button label="Eliminar" icon="pi pi-trash" severity="danger" [outlined]="true"
                         (onClick)="confirmDeleteDocument($event, documento.id)" />
                 </td>
@@ -82,6 +83,9 @@
 </ng-template>
 </p-table>
 
+<p-confirmDialog />
+
+<!-- AGREGAR AVISO DE PRIVACIDAD -->
 <p-dialog [(visible)]="Dialog" [style]="{ width: '750px' }" header="Detalle de archivo" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="content">
@@ -95,30 +99,37 @@
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+        <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog('')" />
         <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="createAvisoPrivacidad()" />
     </ng-template>
 </p-dialog>
 
+<!-- AGREGAR ARCHIVO -->
 <p-dialog [(visible)]="DialogArchivo" [style]="{ width: '750px' }" header="Detalle de archivo" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="content">
 
         <div class="field">
-            <label for="name">Nombre aviso de privacidad:</label>
+            <label for="name">Nombre archivo para el aviso de privacidad:</label>
             <input id="disabled-input" type="text" [(ngModel)]="this.createAvisoPrivacidadDto.nombreAvisoPrivacidad"
                 pInputText />
+        </div>
+
+        <div>
+            <label for="name">Archivo PDF:</label>
+            <p-fileUpload mode="basic" chooseLabel="Selecciona tu archivo" chooseIcon="pi pi-upload" name="demo[]"
+                maxFileSize="20000000" accept=".pdf" (onSelect)="onFileSelect($event)" customUpload="true" />
         </div>
 
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
-        <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="createAvisoPrivacidad()" />
+        <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog('archivo')" />
+        <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="saveFile()" [disabled]="isFormValid()" />
     </ng-template>
 </p-dialog>
 
-<!-- <p-toast /> -->
+<p-toast />
 <div *ngIf="spinner" class="overlay">
     <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
         animationDuration=".5s" />
