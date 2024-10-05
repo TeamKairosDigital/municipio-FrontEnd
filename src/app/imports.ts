@@ -16,6 +16,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SidebarModule } from 'primeng/sidebar';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import { SidebarModule } from 'primeng/sidebar';
         ConfirmDialogModule,
         ToastModule,
         ProgressSpinnerModule,
-        SidebarModule
+        SidebarModule,
+        InputSwitchModule
     ],
     exports: [
         CommonModule,
@@ -48,7 +50,8 @@ import { SidebarModule } from 'primeng/sidebar';
         ConfirmDialogModule,
         ToastModule,
         ProgressSpinnerModule,
-        SidebarModule
+        SidebarModule,
+        InputSwitchModule
     ],
     providers: [DocumentosService]
 })

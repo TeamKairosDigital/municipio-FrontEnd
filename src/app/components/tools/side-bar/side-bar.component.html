@@ -77,7 +77,13 @@
                             </ul>
                         </li>
                     </ul>
-
+                </div>
+                <div class="mt-auto">
+                    <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+                    <div class="flex align-items-center justify-content-around">
+                        <label for="">Modo oscuro</label>
+                        <p-inputSwitch [(ngModel)]="checked" (onChange)="onThemeChange($event)" />
+                    </div>
 
                 </div>
                 <div class="mt-auto">

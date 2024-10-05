@@ -36,6 +36,7 @@ export class AvisoPrivacidadComponent {
   };
 
   createAvisoPrivacidadArchivoDto: createAvisoPrivacidadArchivoDto = {
+    id: 0,
     nombreArchivo: '',
     avisoPrivacidadId: 0,
     archivo: null
@@ -181,6 +182,17 @@ export class AvisoPrivacidadComponent {
   }
 
 
+  openModalArchivo(id: number) {
+
+    if (this.createAvisoPrivacidadArchivoDto.id != 0) {
+      this.openFileModal('archivo');
+    } else {
+      this.selectedFile = null;
+      this.createAvisoPrivacidadArchivoDto.nombreArchivo = '';
+    }
+    this.openFileModal('archivo');
+
+  }
 
   onFileSelect(event: any): void {
 
@@ -202,11 +214,20 @@ export class AvisoPrivacidadComponent {
     }
   }
 
-  isFormValid(): boolean {
-    if (this.selectedFile) {
-      return false;
+  isFormValid(value: string): boolean {
+
+    if (value == 'archivo') {
+      if (this.selectedFile != null && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0) {
+        return false;
+      } else {
+        return true;
+      }
     } else {
-      return true;
+      if (this.createAvisoPrivacidadDto.nombreAvisoPrivacidad.length > 0) {
+        return false;
+      } else {
+        return true;
+      }
     }
 
   }
