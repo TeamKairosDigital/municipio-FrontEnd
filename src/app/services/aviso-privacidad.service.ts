@@ -38,7 +38,13 @@ export class AvisoPrivacidadService {
 
 
   createAvisoPrivacidadArchivo(data: createAvisoPrivacidadArchivoDto): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/createAvisoPrivacidadArchivo`, data);
+
+    const formData = new FormData();
+    formData.append('nombreArchivo', data.nombreArchivo);
+    formData.append('avisoPrivacidadId', data.avisoPrivacidadId.toString());
+    formData.append('archivo', data.archivo);
+
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/createAvisoPrivacidadArchivo`, formData);
   }
 
   getAvisoPrivacidadArchivo(id: number): Observable<ApiResponse<any>> {

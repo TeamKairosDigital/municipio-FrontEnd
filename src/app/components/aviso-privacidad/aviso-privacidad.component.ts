@@ -8,6 +8,7 @@ import { createAvisoPrivacidadDto } from '../../models/createAvisoPrivacidadDto'
 import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { createAvisoPrivacidadArchivoDto } from '../../models/createAvisoPrivacidadArchivo';
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-aviso-privacidad',
@@ -48,6 +49,7 @@ export class AvisoPrivacidadComponent {
 
   // Almacena el archivo seleccionado
   selectedFile: File | null = null;
+  fileUrl: SafeResourceUrl | null = null;
 
   spinner: boolean = false;
   Dialog: boolean = false;
@@ -190,6 +192,7 @@ export class AvisoPrivacidadComponent {
       this.selectedFile = null;
       this.createAvisoPrivacidadArchivoDto.nombreArchivo = '';
     }
+    this.createAvisoPrivacidadArchivoDto.avisoPrivacidadId = id;
     this.openFileModal('archivo');
 
   }

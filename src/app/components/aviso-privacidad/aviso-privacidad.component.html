@@ -132,6 +132,10 @@
                 maxFileSize="20000000" accept=".pdf" (onSelect)="onFileSelect($event)" customUpload="true" />
         </div>
 
+        <div *ngIf="fileUrl" class="mt-4">
+            <iframe [src]="fileUrl" width="100%" height="900px"></iframe>
+        </div>
+
     </ng-template>
 
     <ng-template pTemplate="footer">
