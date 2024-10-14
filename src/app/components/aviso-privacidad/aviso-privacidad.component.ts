@@ -238,27 +238,111 @@ export class AvisoPrivacidadComponent {
   // Método para guardar el archivo
   saveFile(): void {
     this.spinner = true;
-    if (this.selectedFile) {
-      console.log(this.createAvisoPrivacidadArchivoDto)
-      this.avisoPrivacidadService.createAvisoPrivacidadArchivo(this.createAvisoPrivacidadArchivoDto).subscribe({
-        next: (response) => {
-          // if(response)
-          this.hideDialog('archivo');
+    console.log(this.createAvisoPrivacidadArchivoDto)
+    if(this.createAvisoPrivacidadArchivoDto.id != 0){
+      if (this.selectedFile) {
 
-          this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
-          this.messageService.add({ severity: 'success', summary: 'Guardado', detail: 'Su archivo ha sido guardado correctamente' });
-          console.log('Archivo guardado exitosamente:', response);
-          this.spinner = false;
-        },
-        error: (err) => {
-          console.error('Error al guardar el archivo:', err);
-          this.spinner = false;
-        }
-      });
-    } else {
-      console.error('No se ha seleccionado ningún archivo.');
-      this.spinner = false;
+        this.avisoPrivacidadService.editAvisoPrivacidadArchivo(this.createAvisoPrivacidadArchivoDto).subscribe({
+          next: (response) => {
+            // if(response)
+            this.hideDialog('archivo');
+  
+            this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
+            this.messageService.add({ severity: 'success', summary: 'Guardado', detail: 'Su archivo ha sido guardado correctamente' });
+            console.log('Archivo guardado exitosamente:', response);
+            this.spinner = false;
+          },
+          error: (err) => {
+            console.error('Error al guardar el archivo:', err);
+            this.spinner = false;
+          }
+        });
+      } else {
+        console.error('No se ha seleccionado ningún archivo.');
+        this.spinner = false;
+      }
+    }else{
+      if (this.selectedFile) {
+
+        this.avisoPrivacidadService.createAvisoPrivacidadArchivo(this.createAvisoPrivacidadArchivoDto).subscribe({
+          next: (response) => {
+            // if(response)
+            this.hideDialog('archivo');
+  
+            this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
+            this.messageService.add({ severity: 'success', summary: 'Guardado', detail: 'Su archivo ha sido guardado correctamente' });
+            console.log('Archivo guardado exitosamente:', response);
+            this.spinner = false;
+          },
+          error: (err) => {
+            console.error('Error al guardar el archivo:', err);
+            this.spinner = false;
+          }
+        });
+      } else {
+        console.error('No se ha seleccionado ningún archivo.');
+        this.spinner = false;
+      }
     }
+    
+  }
+
+
+  getAvisoPrivacidadArchivo(id: number, nuevo: boolean): void {
+
+    // if (id != 0 && !nuevo) {
+
+      this.avisoPrivacidadService.getAvisoPrivacidadArchivo(id).subscribe((response) => {
+
+        if (response.success && response.data) {
+          this.createAvisoPrivacidadArchivoDto.id = response.data.id;
+          this.createAvisoPrivacidadArchivoDto.nombreArchivo = response.data.NombreArchivo;
+          this.openFileModal('archivo');
+        }
+
+      });
+
+    // } else {
+    //   this.createAvisoPrivacidadDto.id = 0;
+    //   this.createAvisoPrivacidadDto.nombreAvisoPrivacidad = '';
+    //   this.openFileModal('archivo');
+    // }
+
+  }
+
+
+  confirmDeleteDocumentArchivo(event: Event, id: number) {
+
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: '¿Quieres eliminar este aviso de privacidad?',
+      header: 'Confirmación de eliminación',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: "p-button-danger p-button-text",
+      rejectButtonStyleClass: "p-button-text p-button-text",
+      acceptIcon: "none",
+      rejectIcon: "none",
+
+      accept: () => {
+        this.deleteAvisoPrivacidadArchivo(id);
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Cancelado', detail: 'Has cancelado' });
+      }
+    });
+  }
+
+  deleteAvisoPrivacidadArchivo(id: number) {
+    this.avisoPrivacidadService.deleteAvisoPrivacidadArchivo(id).subscribe((response) => {
+
+      if (response.success) {
+        this.messageService.add({ severity: 'info', summary: 'Eliminado', detail: 'Aviso de privacidad ha sido eliminado' });
+        this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al eliminar Aviso de privacidad' });
+        console.error('Error deleting document:', response.message);
+      }
+    });
   }
 
 }

@@ -51,7 +51,7 @@ export class AvisoPrivacidadService {
     return this.http.get<ApiResponse<any>>(`${this.apiUrl}/getAvisoPrivacidadArchivo/${id}`);
   }
 
-  editAvisoPrivacidadArchivo(data: createAvisoPrivacidadDto): Observable<ApiResponse<any>> {
+  editAvisoPrivacidadArchivo(data: createAvisoPrivacidadArchivoDto): Observable<ApiResponse<any>> {
     return this.http.put<ApiResponse<any>>(`${this.apiUrl}/editAvisoPrivacidadArchivo`, data);
   }
 
