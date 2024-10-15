@@ -3,11 +3,13 @@ import { DocumentosComponent } from './components/documentos/documentos.componen
 import { FileViewComponent } from './components/file-view/file-view.component';
 import { LoginComponent } from './components/login/login.component';
 import { AvisoPrivacidadComponent } from './components/aviso-privacidad/aviso-privacidad.component';
+import { ObrasComponent } from './components/obras/obras.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'documentos', component: DocumentosComponent },
     { path: 'verArchivo', component: FileViewComponent },
     { path: 'avisoPrivacidad', component: AvisoPrivacidadComponent },
+    { path: 'obras', component: ObrasComponent },
     { path: '**', redirectTo: 'login' }
 ];

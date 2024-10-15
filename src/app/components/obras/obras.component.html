@@ -1,0 +1,54 @@
+<app-side-bar></app-side-bar>
+<div class="card">
+    <h2 class="font-size: 4rem">Obras</h2>
+</div>
+
+<div class="card">
+
+    <div class="p-grid p-justify-center p-mt-4">
+        <div class="p-col-10">
+        <p-table [value]="blogs" [paginator]="true" [rows]="5">
+            <ng-template pTemplate="header">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-blog>
+            <tr>
+                <td>{{ blog.id }}</td>
+                <td>{{ blog.nombre }}</td>
+                <td>{{ blog.descripcion }}</td>
+                <td>
+                <button pButton label="Editar" icon="pi pi-pencil" class="p-button-rounded p-button-info p-mr-2" (click)="onEdit(blog)"></button>
+                <button pButton label="Eliminar" icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="onDelete(blog)"></button>
+                </td>
+            </tr>
+            </ng-template>
+        </p-table>
+    
+        <button pButton label="Agregar Blog" icon="pi pi-plus" class="p-mt-4" (click)="showDialogToAdd()"></button>
+        </div>
+    </div>
+  
+    <!-- Diálogo para agregar o editar un blog -->
+    <p-dialog [(visible)]="displayDialog" [modal]="true" [closable]="false" header="Agregar/Editar Blog" [responsive]="true" [style]="{ width: '30vw' }">
+    <div class="p-fluid">
+        <div class="p-field">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" pInputText [(ngModel)]="blog.nombre" />
+        </div>
+        <div class="p-field">
+        <label for="descripcion">Descripción</label>
+        <input id="descripcion" pInputText [(ngModel)]="blog.descripcion" />
+        </div>
+    </div>
+    <p-footer>
+        <button pButton label="Guardar" icon="pi pi-check" (click)="save()" class="p-button-success p-mr-2"></button>
+        <button pButton label="Cancelar" icon="pi pi-times" (click)="hideDialog()" class="p-button-secondary"></button>
+    </p-footer>
+    </p-dialog>
+  
+</div>
