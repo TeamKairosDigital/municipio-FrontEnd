@@ -17,6 +17,9 @@ import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SidebarModule } from 'primeng/sidebar';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { PasswordModule } from 'primeng/password';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
     imports: [
@@ -34,7 +37,10 @@ import { InputSwitchModule } from 'primeng/inputswitch';
         ToastModule,
         ProgressSpinnerModule,
         SidebarModule,
-        InputSwitchModule
+        InputSwitchModule,
+        FloatLabelModule,
+        PasswordModule,
+        CardModule
     ],
     exports: [
         CommonModule,
@@ -51,7 +57,10 @@ import { InputSwitchModule } from 'primeng/inputswitch';
         ToastModule,
         ProgressSpinnerModule,
         SidebarModule,
-        InputSwitchModule
+        InputSwitchModule,
+        FloatLabelModule,
+        PasswordModule,
+        CardModule
     ],
     providers: [DocumentosService]
 })

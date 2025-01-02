@@ -1,8 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { ImportsModule } from '../../../imports';
 import { Sidebar } from 'primeng/sidebar';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ThemeService } from '../../../services/theme.service';
+import { StorageService } from '../../../services/storage-service.service';
+import { UserLS } from '../../../models/userLS';
+import { ConfirmationService } from 'primeng/api';
+import { AuthService } from '../../../services/auth.service';
 
 
 @Component({
@@ -10,7 +14,8 @@ import { ThemeService } from '../../../services/theme.service';
   standalone: true,
   imports: [ImportsModule, RouterModule],
   templateUrl: './side-bar.component.html',
-  styleUrl: './side-bar.component.css'
+  styleUrl: './side-bar.component.css',
+  providers: [ConfirmationService]
 })
 export class SideBarComponent {
 
@@ -18,10 +23,20 @@ export class SideBarComponent {
 
   checked: boolean = false;
   sidebarVisible: boolean = false;
+  user: UserLS;
 
   constructor(
-    private themeService: ThemeService
-  ) { }
+    private router: Router,
+    private themeService: ThemeService,
+    private confirmationService: ConfirmationService,
+    private storageService: StorageService,
+    private authService: AuthService
+  ) { 
+    this.user = {
+      username: '',
+      municipality_id: ''
+    }
+  }
 
   ngOnInit() {
     // Cargar el estado del tema desde el localStorage al iniciar el componente
@@ -32,6 +47,11 @@ export class SideBarComponent {
       this.checked = true;
     } else {
       this.checked = false;
+    }
+
+    const storedUser = this.storageService.getItem<UserLS>('user');
+    if (storedUser) {
+      this.user = storedUser;
     }
   }
 
@@ -46,6 +66,28 @@ export class SideBarComponent {
     } else {
       this.themeService.changeTheme('saga-blue'); // Tema claro
     }
+  }
+
+  logout() {
+    this.confirmationService.confirm({
+      message: '¿Quieres cerrar sesión?',
+      header: 'Cerrar sesión',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: "p-button-danger p-button-text",
+      rejectButtonStyleClass: "p-button-text p-button-text",
+      acceptIcon: "none",
+      rejectIcon: "none",
+
+      accept: () => {
+        this.removeStorage();
+      }
+    });
+
+  }
+
+  removeStorage() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
 }

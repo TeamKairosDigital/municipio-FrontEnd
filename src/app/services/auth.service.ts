@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { LoginDto } from '../models/LoginDto';
+import { ApiResponse } from '../models/ApiResponseDto';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +13,8 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, { username, password });
+  login(username: string, password: string): Observable<ApiResponse<LoginDto>> {
+    return this.http.post<ApiResponse<LoginDto>>(`${this.apiUrl}/login`, { username, password });
   }
 
   // Método para verificar si el usuario está autenticado
@@ -22,7 +24,9 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.removeItem('mombreMunicipio');
+    localStorage.removeItem('municipality_id');
+    localStorage.removeItem('access_token');
   }
 
 
