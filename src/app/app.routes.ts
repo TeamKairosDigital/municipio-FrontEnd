@@ -4,12 +4,25 @@ import { FileViewComponent } from './components/file-view/file-view.component';
 import { LoginComponent } from './components/login/login.component';
 import { AvisoPrivacidadComponent } from './components/aviso-privacidad/aviso-privacidad.component';
 import { ObrasComponent } from './components/obras/obras.component';
+import { AuthGuard } from './guards/auth.guard';
+import { AyuntamientoComponent } from './components/ayuntamiento/ayuntamiento.component';
+import { AobrasComponent } from './components/ayuntamiento/Pages/aobras/aobras.component';
+import { SEVACComponent } from './components/ayuntamiento/Pages/sevac/sevac.component';
 
 export const routes: Routes = [
-    { path: 'login', component: LoginComponent },
-    { path: 'documentos', component: DocumentosComponent },
-    { path: 'verArchivo', component: FileViewComponent },
-    { path: 'avisoPrivacidad', component: AvisoPrivacidadComponent },
-    { path: 'obras', component: ObrasComponent },
-    { path: '**', redirectTo: 'login' }
+    { path: 'loginAdmin', component: LoginComponent }, // Acceso directo al login
+    { path: 'documentos', component: DocumentosComponent, canActivate: [AuthGuard] },
+    { path: 'verArchivo', component: FileViewComponent, canActivate: [AuthGuard] },
+    { path: 'avisoPrivacidad', component: AvisoPrivacidadComponent, canActivate: [AuthGuard] },
+    { path: 'obras', component: ObrasComponent, canActivate: [AuthGuard] },
+    { 
+        path: '', 
+        component: AyuntamientoComponent, // Componente por defecto
+        children: [
+            { path: 'ayuntamiento/obras', component: AobrasComponent },
+            { path: 'ayuntamiento/sevac', component: SEVACComponent }
+        ]
+    },
+    { path: '**', redirectTo: '', pathMatch: 'full' } // Wildcard redirige al componente por defecto
 ];
+

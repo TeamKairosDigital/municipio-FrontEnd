@@ -42,8 +42,6 @@ export class LoginComponent {
       this.authService.login(username, password).subscribe({
         next: (response) => {
 
-          console.log(response);
-
           if(response.success && response.data != null){
             // Guardar datos en localStorage usando el servicio
             this.storageService.setItem('user', response.data.username);
@@ -52,6 +50,7 @@ export class LoginComponent {
             this.storageService.setItem('access_token', response.data.access_token);
             // Redirigir al usuario a la página principal
             this.router.navigate(['/documentos']);
+            
           }else{
             this.messageService.add({ severity: 'error', summary: 'Error', detail: response.message });
           }

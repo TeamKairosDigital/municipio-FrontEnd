@@ -9,7 +9,7 @@ import { NgModule } from '@angular/core';
 import { DocumentosService } from './services/documentos.service';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -20,6 +20,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { CardModule } from 'primeng/card';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
@@ -40,7 +41,9 @@ import { CardModule } from 'primeng/card';
         InputSwitchModule,
         FloatLabelModule,
         PasswordModule,
-        CardModule
+        CardModule,
+        RouterModule,
+        ReactiveFormsModule
     ],
     exports: [
         CommonModule,
@@ -60,8 +63,9 @@ import { CardModule } from 'primeng/card';
         InputSwitchModule,
         FloatLabelModule,
         PasswordModule,
-        CardModule
-    ],
-    providers: [DocumentosService]
+        CardModule,
+        RouterModule,
+        ReactiveFormsModule
+    ]
 })
 export class ImportsModule { }

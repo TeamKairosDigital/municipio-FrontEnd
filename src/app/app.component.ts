@@ -10,7 +10,7 @@ import { ThemeService } from './services/theme.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'front-end-A17';
+  title = 'Larrainzar';
   constructor(private themeService: ThemeService) {
     // Ya se aplicó el tema al iniciar la aplicación en el servicio
   }
