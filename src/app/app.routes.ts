@@ -5,9 +5,6 @@ import { LoginComponent } from './components/login/login.component';
 import { AvisoPrivacidadComponent } from './components/aviso-privacidad/aviso-privacidad.component';
 import { ObrasComponent } from './components/obras/obras.component';
 import { AuthGuard } from './guards/auth.guard';
-import { AyuntamientoComponent } from './components/ayuntamiento/ayuntamiento.component';
-import { AobrasComponent } from './components/ayuntamiento/Pages/aobras/aobras.component';
-import { SEVACComponent } from './components/ayuntamiento/Pages/sevac/sevac.component';
 
 export const routes: Routes = [
     { path: 'loginAdmin', component: LoginComponent }, // Acceso directo al login
@@ -15,14 +12,5 @@ export const routes: Routes = [
     { path: 'verArchivo', component: FileViewComponent, canActivate: [AuthGuard] },
     { path: 'avisoPrivacidad', component: AvisoPrivacidadComponent, canActivate: [AuthGuard] },
     { path: 'obras', component: ObrasComponent, canActivate: [AuthGuard] },
-    { 
-        path: '', 
-        component: AyuntamientoComponent, // Componente por defecto
-        children: [
-            { path: 'ayuntamiento/obras', component: AobrasComponent },
-            { path: 'ayuntamiento/sevac', component: SEVACComponent }
-        ]
-    },
-    { path: '**', redirectTo: '', pathMatch: 'full' } // Wildcard redirige al componente por defecto
+    { path: '**', redirectTo: 'loginAdmin', pathMatch: 'full' } // Wildcard redirige al componente por defecto
 ];
-
