@@ -3,13 +3,15 @@ import { Injectable } from '@angular/core';
 import { ApiResponse } from '../models/ApiResponseDto';
 import { Observable } from 'rxjs';
 import { Obras } from '../models/Obras';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ObrasService {
 
-  private apiUrl = 'http://localhost:3000/obras';
+  private api = environment.apiUrl;
+  private apiUrl = `${this.api}/auth`;
 
   constructor(private http: HttpClient) { }
 

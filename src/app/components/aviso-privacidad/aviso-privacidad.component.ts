@@ -345,4 +345,8 @@ export class AvisoPrivacidadComponent {
     });
   }
 
+  isRowExpanded(documento: any): boolean {
+    return !!this.expandedRows[documento.id];
+  }
+
 }

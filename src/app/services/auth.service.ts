@@ -3,15 +3,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoginDto } from '../models/LoginDto';
 import { ApiResponse } from '../models/ApiResponseDto';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private tokenKey = 'auth_token';
-
-  private apiUrl = 'http://localhost:3000/auth';
+  private api = environment.apiUrl;
+  private apiUrl = `${this.api}/auth`;
 
   constructor(private http: HttpClient) { 
   }

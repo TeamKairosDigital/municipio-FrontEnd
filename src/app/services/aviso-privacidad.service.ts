@@ -6,13 +6,15 @@ import { listAvisoPrivacidad } from '../models/listAvisoPrivacidadDto';
 import { filterAvisoPrivacidadDto } from '../models/filterAvisoPrivacidadDto';
 import { createAvisoPrivacidadDto } from '../models/createAvisoPrivacidadDto';
 import { createAvisoPrivacidadArchivoDto } from '../models/createAvisoPrivacidadArchivo';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AvisoPrivacidadService {
 
-  private apiUrl = 'http://localhost:3000/aviso-privacidad';
+  private api = environment.apiUrl;
+  private apiUrl = `${this.api}/auth`;
 
   constructor(private http: HttpClient) { }
 

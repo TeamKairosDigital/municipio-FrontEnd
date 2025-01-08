@@ -6,13 +6,15 @@ import { DocumentosFiltrosDto } from '../models/DocumentosFiltrosDto';
 import { ApiResponse } from '../models/ApiResponseDto';
 import { createFileDto } from '../models/createFileDto';
 import { periodoDto } from '../models/periodoDto';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentosService {
 
-  private apiUrl = 'http://localhost:3000/documentos';
+  private api = environment.apiUrl;
+  private apiUrl = `${this.api}/auth`;
 
   constructor(private http: HttpClient) { }
 

@@ -37,7 +37,7 @@
             <tr>
                 <td>
                     <p-button type="button" pRipple [pRowToggler]="documento" [text]="true" [rounded]="true"
-                        [plain]="true" [icon]="'pi pi-chevron-down' ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+                        [plain]="true"  [icon]="isRowExpanded(documento) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"/>
                 </td>
                 <td>{{ documento.nombre }}</td>
                 <td>{{ documento.fechaCreacion }}</td>
