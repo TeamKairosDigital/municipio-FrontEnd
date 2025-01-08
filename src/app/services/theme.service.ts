@@ -19,7 +19,7 @@ export class ThemeService {
     const themeLink = document.getElementById('app-theme') as HTMLLinkElement;
 
     if (themeLink) {
-      themeLink.href = `assets/themes/${theme}/theme.css`;
+      themeLink.href = `https://cdn.jsdelivr.net/npm/primeng/resources/themes/${theme}/theme.css`;
       this.currentTheme = theme;
 
       // Guardar el tema seleccionado en localStorage
@@ -34,7 +34,7 @@ export class ThemeService {
     const themeLink = document.getElementById('app-theme') as HTMLLinkElement;
 
     if (themeLink) {
-      themeLink.href = `assets/themes/${theme}/theme.css`;
+      themeLink.href = `https://cdn.jsdelivr.net/npm/primeng/resources/themes/${theme}/theme.css`;
     } else {
       console.error('Elemento link para el tema no encontrado.');
     }
