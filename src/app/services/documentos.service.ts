@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
 export class DocumentosService {
 
   private api = environment.apiUrl;
-  private apiUrl = `${this.api}/auth`;
+  private apiUrl = `${this.api}/documentos`;
 
   constructor(private http: HttpClient) { }
 
@@ -30,6 +30,8 @@ export class DocumentosService {
     formData.append('periodoId', parameters.periodoId.toString());
     formData.append('anualidad', parameters.anualidad);
     formData.append('archivo', parameters.archivo);
+    formData.append('municipality_id', parameters.municipality_id.toString());
+    formData.append('usuarioCreacionId', parameters.usuarioCreacionId.toString());
 
     return this.http.post<ApiResponse<any>>(`${this.apiUrl}/create-file`, formData);
   }

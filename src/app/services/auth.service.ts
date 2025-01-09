@@ -16,6 +16,7 @@ export class AuthService {
   constructor(private http: HttpClient) { 
   }
 
+  // LOGIN
   login(username: string, password: string): Observable<ApiResponse<LoginDto>> {
     return this.http.post<ApiResponse<LoginDto>>(`${this.apiUrl}/login`, { username, password });
   }
@@ -30,8 +31,6 @@ export class AuthService {
   // Método para verificar si el usuario está autenticado
   isAuthenticated(): boolean {
     const token = this.getToken();
-    
-    console.log('Token obtenido:', token); // Verifica si el token se obtiene correctamente de localStorage
     
     if (!token) return false;
   
@@ -48,13 +47,10 @@ export class AuthService {
     }
     
   }
-  
 
   getToken(): string | null {
     const token = localStorage.getItem('access_token');
     return token;
   }
   
-
-
 }

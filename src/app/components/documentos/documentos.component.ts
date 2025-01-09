@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Documents } from '../../models/archivo';
 import { ImportsModule } from '../../imports';
+import { StorageService } from '../../services/storage-service.service';
 
 @Component({
   selector: 'app-documentos',
@@ -84,7 +85,9 @@ export class DocumentosComponent {
     documentoId: 0,
     periodoId: 0,
     anualidad: '',
-    archivo: null
+    archivo: null,
+    usuarioCreacionId: 0,
+    municipality_id: 0
   };
 
   // Variable para definir si es nuevo archivo para ocultar cierto botones
@@ -99,7 +102,8 @@ export class DocumentosComponent {
     private sanitizer: DomSanitizer,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private storageService: StorageService
   ) {
     const today = new Date();
     this.currentYear = today.getFullYear().toString();
@@ -112,7 +116,7 @@ export class DocumentosComponent {
 
   ngOnInit() {
 
-    this.selectedYear = this.years.find(year => year.value === '2024');
+    this.selectedYear = this.years.find(year => year.value === this.currentYear);
     this.selectedLey = this.leyes.find(ley => ley.value === '-1');
 
     //Obtenemos la lista de periodos
@@ -120,6 +124,9 @@ export class DocumentosComponent {
 
     //Obtenemos la lista para los documentos juntos con sus archivos existentes
     this.getDocuments(this.DocumentosFiltros);
+
+    this.createFileDto.usuarioCreacionId = Number(this.storageService.getItem('userId'));
+    this.createFileDto.municipality_id = Number(this.storageService.getItem('municipality_id'));
 
   }
 
@@ -236,13 +243,32 @@ export class DocumentosComponent {
 
 
 
+  // getFileBase64(id: number): void {
+  //   this.spinner = true;
+  //   this.documentosService.getFileBase64(id).subscribe({
+  //     next: (response) => {
+  //       const base64 = response.data?.base64;
+  //       this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`data:application/pdf;base64,${base64}`);
+  //       this.spinner = false;
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching file base64', err);
+  //       this.spinner = false;
+  //     }
+  //   });
+  // }
+
   getFileBase64(id: number): void {
     this.spinner = true;
     this.documentosService.getFileBase64(id).subscribe({
       next: (response) => {
         const base64 = response.data?.base64;
-        this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`data:application/pdf;base64,${base64}`);
-        this.spinner = false;
+        if (base64) {
+          const blob = this.base64ToBlob(base64, 'application/pdf');
+          const url = URL.createObjectURL(blob);
+          this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url); // Esto ahora usará un URL seguro
+          this.spinner = false;
+        }
       },
       error: (err) => {
         console.error('Error fetching file base64', err);
@@ -250,6 +276,21 @@ export class DocumentosComponent {
       }
     });
   }
+  
+  base64ToBlob(base64: string, mimeType: string): Blob {
+    const byteCharacters = atob(base64);
+    const byteArrays: Uint8Array[] = [];
+  
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512);
+      const byteNumbers = Array.prototype.map.call(slice, (char) => char.charCodeAt(0)) as number[];
+      byteArrays.push(new Uint8Array(byteNumbers));
+    }
+  
+    return new Blob(byteArrays, { type: mimeType });
+  }
+  
+  
 
   hideDialog() {
     this.fileDialog = false;

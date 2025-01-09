@@ -5,4 +5,6 @@ export class createFileDto {
     periodoId: number = 0;
     anualidad: string = '';
     archivo: any;
+    usuarioCreacionId: number = 0;
+    municipality_id: number = 0;
 }

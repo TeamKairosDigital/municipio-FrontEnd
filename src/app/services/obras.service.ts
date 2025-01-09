@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment';
 export class ObrasService {
 
   private api = environment.apiUrl;
-  private apiUrl = `${this.api}/auth`;
+  private apiUrl = `${this.api}/obras`;
 
   constructor(private http: HttpClient) { }
 

@@ -9,6 +9,7 @@ import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { createAvisoPrivacidadArchivoDto } from '../../models/createAvisoPrivacidadArchivo';
 import { SafeResourceUrl } from '@angular/platform-browser';
+import { StorageService } from '../../services/storage-service.service';
 
 @Component({
   selector: 'app-aviso-privacidad',
@@ -24,6 +25,7 @@ export class AvisoPrivacidadComponent {
     private avisoPrivacidadService: AvisoPrivacidadService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
+     private storageService: StorageService
   ) { }
 
   expandedRows: { [key: string]: boolean } = {};
@@ -32,7 +34,7 @@ export class AvisoPrivacidadComponent {
 
   createAvisoPrivacidadDto: createAvisoPrivacidadDto = {
     nombreAvisoPrivacidad: '',
-    usuarioId: 0,
+    usuarioCreacionId: 0,
     municipality_id: 0
   };
 
@@ -61,15 +63,8 @@ export class AvisoPrivacidadComponent {
   ngOnInit() {
     this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
 
-    // Obtener el valor guardado en localStorage
-    const userString = localStorage.getItem('user');
-
-    // Verificar si el valor existe antes de convertirlo a objeto
-    if (userString) {
-      const userObject = JSON.parse(userString);
-      this.createAvisoPrivacidadDto.municipality_id = userObject.municipality_id;
-      this.createAvisoPrivacidadDto.usuarioId = userObject.id;
-    }
+    this.createAvisoPrivacidadDto.usuarioCreacionId = Number(this.storageService.getItem('userId'));
+    this.createAvisoPrivacidadDto.municipality_id = Number(this.storageService.getItem('municipality_id'));
   }
 
   pageChange(event: any) {

@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
 export class AvisoPrivacidadService {
 
   private api = environment.apiUrl;
-  private apiUrl = `${this.api}/auth`;
+  private apiUrl = `${this.api}/aviso-privacidad`;
 
   constructor(private http: HttpClient) { }
 
