@@ -8,7 +8,7 @@ import { createAvisoPrivacidadDto } from '../../models/createAvisoPrivacidadDto'
 import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { createAvisoPrivacidadArchivoDto } from '../../models/createAvisoPrivacidadArchivo';
-import { SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { StorageService } from '../../services/storage-service.service';
 
 @Component({
@@ -25,7 +25,8 @@ export class AvisoPrivacidadComponent {
     private avisoPrivacidadService: AvisoPrivacidadService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-     private storageService: StorageService
+    private storageService: StorageService,
+    private sanitizer: DomSanitizer,
   ) { }
 
   expandedRows: { [key: string]: boolean } = {};
@@ -41,6 +42,7 @@ export class AvisoPrivacidadComponent {
   createAvisoPrivacidadArchivoDto: createAvisoPrivacidadArchivoDto = {
     id: 0,
     nombreArchivo: '',
+    nombreArchivoOriginal: '',
     avisoPrivacidadId: 0,
     archivo: null
   }
@@ -60,6 +62,8 @@ export class AvisoPrivacidadComponent {
   first = 0;
   rows = 10;
 
+  EsNuevo: boolean = false;
+
   ngOnInit() {
     this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
 
@@ -77,6 +81,9 @@ export class AvisoPrivacidadComponent {
     this.avisoPrivacidadService.getListAvisoPrivacidad(data).subscribe((response) => {
       if (response.success && response.data) {
         this.listAvisoPrivacidad = response.data;
+        this.listAvisoPrivacidad.forEach((element) => {
+          element.icon = 'pi pi-chevron-right';
+        });
       }
       this.spinner = false;
     });
@@ -181,15 +188,23 @@ export class AvisoPrivacidadComponent {
 
   openModalArchivo(id: number) {
 
-    if (this.createAvisoPrivacidadArchivoDto.id != 0) {
-      this.openFileModal('archivo');
-    } else {
-      this.selectedFile = null;
-      this.createAvisoPrivacidadArchivoDto.nombreArchivo = '';
-    }
-    this.createAvisoPrivacidadArchivoDto.avisoPrivacidadId = id;
-    this.openFileModal('archivo');
+    // if (this.createAvisoPrivacidadArchivoDto.id != 0) {
+    //   this.openFileModal('archivo');
+    // } else {
+    //   this.selectedFile = null;
+    //   this.createAvisoPrivacidadArchivoDto.id = 0;
+    //   this.createAvisoPrivacidadArchivoDto.nombreArchivo = '';
+    //   this.EsNuevo = true;
+    // }
+    // this.createAvisoPrivacidadArchivoDto.avisoPrivacidadId = id;
+    // this.openFileModal('archivo');
 
+    this.selectedFile = null;
+    this.createAvisoPrivacidadArchivoDto.id = 0;
+    this.createAvisoPrivacidadArchivoDto.nombreArchivo = '';
+    this.createAvisoPrivacidadArchivoDto.avisoPrivacidadId = id;
+    this.EsNuevo = true;
+    this.openFileModal('archivo');
   }
 
   onFileSelect(event: any): void {
@@ -201,11 +216,13 @@ export class AvisoPrivacidadComponent {
       if (selectedFile.type === 'application/pdf') {
         this.selectedFile = selectedFile;
         this.createAvisoPrivacidadArchivoDto.archivo = this.selectedFile;
+        this.createAvisoPrivacidadArchivoDto.nombreArchivoOriginal = selectedFile.name;
       } else {
         console.error('Solo se permiten archivos PDF.');
         // Puedes limpiar el archivo seleccionado o mostrar un mensaje al usuario
         this.selectedFile = null;
         this.createAvisoPrivacidadArchivoDto.archivo = null;
+        this.createAvisoPrivacidadArchivoDto.nombreArchivoOriginal = '';
       }
     } else {
       console.error('No se pudo obtener el archivo seleccionado.');
@@ -215,9 +232,11 @@ export class AvisoPrivacidadComponent {
   isFormValid(value: string): boolean {
 
     if (value == 'archivo') {
-      if (this.selectedFile != null && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0) {
+      if (this.EsNuevo && this.selectedFile != null && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0) {
         return false;
-      } else {
+      } else if(!this.EsNuevo && this.createAvisoPrivacidadArchivoDto.id != 0 && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0){
+        return false;
+      }else{
         return true;
       }
     } else {
@@ -233,18 +252,18 @@ export class AvisoPrivacidadComponent {
   // Método para guardar el archivo
   saveFile(): void {
     this.spinner = true;
-    console.log(this.createAvisoPrivacidadArchivoDto)
+    // console.log(this.createAvisoPrivacidadArchivoDto)
     if(this.createAvisoPrivacidadArchivoDto.id != 0){
-      if (this.selectedFile) {
+      //if (this.selectedFile) {
 
         this.avisoPrivacidadService.editAvisoPrivacidadArchivo(this.createAvisoPrivacidadArchivoDto).subscribe({
           next: (response) => {
             // if(response)
             this.hideDialog('archivo');
-  
+
             this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
             this.messageService.add({ severity: 'success', summary: 'Guardado', detail: 'Su archivo ha sido guardado correctamente' });
-            console.log('Archivo guardado exitosamente:', response);
+            // console.log('Archivo guardado exitosamente:', response);
             this.spinner = false;
           },
           error: (err) => {
@@ -252,10 +271,10 @@ export class AvisoPrivacidadComponent {
             this.spinner = false;
           }
         });
-      } else {
-        console.error('No se ha seleccionado ningún archivo.');
-        this.spinner = false;
-      }
+      // } else {
+      //   console.error('No se ha seleccionado ningún archivo.');
+      //   this.spinner = false;
+      // }
     }else{
       if (this.selectedFile) {
 
@@ -263,10 +282,10 @@ export class AvisoPrivacidadComponent {
           next: (response) => {
             // if(response)
             this.hideDialog('archivo');
-  
+
             this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
             this.messageService.add({ severity: 'success', summary: 'Guardado', detail: 'Su archivo ha sido guardado correctamente' });
-            console.log('Archivo guardado exitosamente:', response);
+            // console.log('Archivo guardado exitosamente:', response);
             this.spinner = false;
           },
           error: (err) => {
@@ -279,7 +298,7 @@ export class AvisoPrivacidadComponent {
         this.spinner = false;
       }
     }
-    
+
   }
 
 
@@ -290,8 +309,15 @@ export class AvisoPrivacidadComponent {
       this.avisoPrivacidadService.getAvisoPrivacidadArchivo(id).subscribe((response) => {
 
         if (response.success && response.data) {
+          // console.log(response.data);
           this.createAvisoPrivacidadArchivoDto.id = response.data.id;
-          this.createAvisoPrivacidadArchivoDto.nombreArchivo = response.data.NombreArchivo;
+          this.createAvisoPrivacidadArchivoDto.nombreArchivo = response.data.nombreArchivo;
+          if(response.data.url.length > 0){
+            const blob = this.base64ToBlob(response.data.url, 'application/pdf');
+            const url = URL.createObjectURL(blob);
+            this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url); // Esto ahora usará un URL seguro
+            this.EsNuevo = false;
+          }
           this.openFileModal('archivo');
         }
 
@@ -303,6 +329,19 @@ export class AvisoPrivacidadComponent {
     //   this.openFileModal('archivo');
     // }
 
+  }
+
+  base64ToBlob(base64: string, mimeType: string): Blob {
+    const byteCharacters = atob(base64);
+    const byteArrays: Uint8Array[] = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512);
+      const byteNumbers = Array.prototype.map.call(slice, (char) => char.charCodeAt(0)) as number[];
+      byteArrays.push(new Uint8Array(byteNumbers));
+    }
+
+    return new Blob(byteArrays, { type: mimeType });
   }
 
 
@@ -340,8 +379,11 @@ export class AvisoPrivacidadComponent {
     });
   }
 
-  isRowExpanded(documento: any): boolean {
-    return !!this.expandedRows[documento.id];
+  toggleIcon(documento: any): void {
+    documento.icon = 
+      documento.icon === 'pi pi-chevron-right' ? 
+      'pi pi-chevron-down' : 
+      'pi pi-chevron-right';
   }
 
 }

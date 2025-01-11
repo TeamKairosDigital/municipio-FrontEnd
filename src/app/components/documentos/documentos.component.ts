@@ -315,11 +315,13 @@ export class DocumentosComponent {
       if (selectedFile.type === 'application/pdf') {
         this.selectedFile = selectedFile;
         this.createFileDto.archivo = this.selectedFile;
+        this.createFileDto.nombreArchivo = selectedFile.name;
       } else {
         console.error('Solo se permiten archivos PDF.');
         // Puedes limpiar el archivo seleccionado o mostrar un mensaje al usuario
         this.selectedFile = null;
         this.createFileDto.archivo = null;
+        this.createFileDto.nombreArchivo = '';
       }
     } else {
       console.error('No se pudo obtener el archivo seleccionado.');
@@ -329,7 +331,7 @@ export class DocumentosComponent {
   // Método para guardar el archivo
   saveFile(): void {
     if (this.selectedFile) {
-      console.log(this.createFileDto)
+      // console.log(this.createFileDto)
       this.documentosService.uploadFile(this.createFileDto).subscribe({
         next: (response) => {
           // if(response)
@@ -337,7 +339,7 @@ export class DocumentosComponent {
 
           this.getDocuments(this.selectedYear.value);
           this.messageService.add({ severity: 'success', summary: 'Guardado', detail: 'Su archivo ha sido guardado correctamente' });
-          console.log('Archivo guardado exitosamente:', response);
+          // console.log('Archivo guardado exitosamente:', response);
         },
         error: (err) => {
           console.error('Error al guardar el archivo:', err);

@@ -37,7 +37,7 @@
             <tr>
                 <td>
                     <p-button type="button" pRipple [pRowToggler]="documento" [text]="true" [rounded]="true"
-                        [plain]="true"  [icon]="isRowExpanded(documento) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"/>
+                        [plain]="true" [icon]="documento.icon" (onClick)="toggleIcon(documento)"/>
                 </td>
                 <td>{{ documento.nombre }}</td>
                 <td>{{ documento.fechaCreacion }}</td>
@@ -137,13 +137,13 @@
                     pInputText />
             </div>
 
-            <div>
+            <div *ngIf="EsNuevo">
                 <label for="name">Archivo PDF:</label>
                 <p-fileUpload mode="basic" chooseLabel="Selecciona tu archivo" chooseIcon="pi pi-upload" name="demo[]"
                     maxFileSize="20000000" accept=".pdf" (onSelect)="onFileSelect($event)" customUpload="true" />
             </div>
 
-            <div *ngIf="fileUrl" class="mt-4">
+            <div *ngIf="fileUrl && !EsNuevo" class="mt-4">
                 <iframe [src]="fileUrl" width="100%" height="900px"></iframe>
             </div>
 

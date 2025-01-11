@@ -41,7 +41,7 @@ export class DocumentosService {
   }
 
   getFileBase64(id: number): Observable<ApiResponse<{ base64: string }>> {
-    return this.http.get<ApiResponse<{ base64: string }>>(`${this.apiUrl}/base64/${id}`);
+    return this.http.get<ApiResponse<{ base64: string }>>(`${this.apiUrl}/base64/${id}/archivosRepository`);
   }
 
   getPeriodos(): Observable<ApiResponse<periodoDto[]>> {

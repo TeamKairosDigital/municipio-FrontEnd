@@ -4,4 +4,5 @@ export class listAvisoPrivacidad {
     activo: boolean = true;
     fechaCreacion: string = '';
     archivos: [] = [];
+    icon: string = '';
 }
