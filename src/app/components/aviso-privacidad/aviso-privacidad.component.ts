@@ -21,34 +21,32 @@ import { StorageService } from '../../services/storage-service.service';
 })
 export class AvisoPrivacidadComponent {
 
-  constructor(
-    private avisoPrivacidadService: AvisoPrivacidadService,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService,
-    private storageService: StorageService,
-    private sanitizer: DomSanitizer,
-  ) { }
-
+  // Tabla
   expandedRows: { [key: string]: boolean } = {};
 
   listAvisoPrivacidad: listAvisoPrivacidad[] = [];
 
+  filterAvisoPrivacidadDto: filterAvisoPrivacidadDto = {
+    municipioId: 0
+  }
+
+  first = 0;
+  rows = 10;
+
+  // Crear y editar Aviso de privacidad
   createAvisoPrivacidadDto: createAvisoPrivacidadDto = {
     nombreAvisoPrivacidad: '',
     usuarioCreacionId: 0,
     municipality_id: 0
   };
 
+  // Crear y editar archivo de Aviso de privacidad
   createAvisoPrivacidadArchivoDto: createAvisoPrivacidadArchivoDto = {
     id: 0,
     nombreArchivo: '',
     nombreArchivoOriginal: '',
     avisoPrivacidadId: 0,
     archivo: null
-  }
-
-  filterAvisoPrivacidadDto: filterAvisoPrivacidadDto = {
-    municipioId: 0
   }
 
   // Almacena el archivo seleccionado
@@ -59,23 +57,22 @@ export class AvisoPrivacidadComponent {
   Dialog: boolean = false;
   DialogArchivo: boolean = false;
 
-  first = 0;
-  rows = 10;
-
   EsNuevo: boolean = false;
+
+  constructor(
+    private avisoPrivacidadService: AvisoPrivacidadService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+    private storageService: StorageService,
+    private sanitizer: DomSanitizer,
+  ) { }
 
   ngOnInit() {
     this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
-
-    this.createAvisoPrivacidadDto.usuarioCreacionId = Number(this.storageService.getItem('userId'));
-    this.createAvisoPrivacidadDto.municipality_id = Number(this.storageService.getItem('municipality_id'));
   }
 
-  pageChange(event: any) {
-    this.first = event.first;
-    this.rows = event.rows;
-  }
-
+  // Tabla
+  // Obtener lista de Aviso de privacidad con sus archivos si existen
   getListAvisoPrivacidad(data: filterAvisoPrivacidadDto): void {
     this.spinner = true;
     this.avisoPrivacidadService.getListAvisoPrivacidad(data).subscribe((response) => {
@@ -89,6 +86,23 @@ export class AvisoPrivacidadComponent {
     });
   }
 
+  // Paginación de tabla
+  pageChange(event: any) {
+    this.first = event.first;
+    this.rows = event.rows;
+  }
+
+  toggleIcon(documento: any): void {
+    documento.icon = 
+      documento.icon === 'pi pi-chevron-right' ? 
+      'pi pi-chevron-down' : 
+      'pi pi-chevron-right';
+  }
+  // Tabla
+
+
+  // Aviso de privacidad
+  // Abrir modal para formulario
   openFileModal(name: string) {
     if (name == 'archivo') {
       this.DialogArchivo = true;
@@ -97,6 +111,7 @@ export class AvisoPrivacidadComponent {
     }
   }
 
+  // Ocultar modal para formulario
   hideDialog(name: string) {
     if (name == 'archivo') {
       this.DialogArchivo = false;
@@ -105,8 +120,11 @@ export class AvisoPrivacidadComponent {
     }
   }
 
+  // Crear y editar aviso de privacidad
   createAvisoPrivacidad(): void {
     this.spinner = true;
+    this.createAvisoPrivacidadDto.usuarioCreacionId = Number(this.storageService.getItem('userId'));
+    this.createAvisoPrivacidadDto.municipality_id = Number(this.storageService.getItem('municipality_id'));
 
     if (this.createAvisoPrivacidadDto.id != 0) {
       this.avisoPrivacidadService.editAvisoPrivacidad(this.createAvisoPrivacidadDto).subscribe((response) => {
@@ -128,6 +146,7 @@ export class AvisoPrivacidadComponent {
 
   }
 
+  // Obtener aviso de privacidad por id
   getAvisoPrivacidad(id: number, nuevo: boolean): void {
 
     if (id != 0 && !nuevo) {
@@ -150,7 +169,7 @@ export class AvisoPrivacidadComponent {
 
   }
 
-
+  // Alerta de confirmación para eliminación
   confirmDeleteDocument(event: Event, id: number) {
 
     this.confirmationService.confirm({
@@ -171,21 +190,11 @@ export class AvisoPrivacidadComponent {
       }
     });
   }
-
-  deleteAvisoPrivacidad(id: number) {
-    this.avisoPrivacidadService.deleteAvisoPrivacidad(id).subscribe((response) => {
-
-      if (response.success) {
-        this.messageService.add({ severity: 'info', summary: 'Eliminado', detail: 'Aviso de privacidad ha sido eliminado' });
-        this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
-      } else {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al eliminar Aviso de privacidad' });
-        console.error('Error deleting document:', response.message);
-      }
-    });
-  }
+  // Aviso de privacidad
 
 
+  // Aviso de privacidad archivo
+  // Abrir modal para formulario
   openModalArchivo(id: number) {
 
     // if (this.createAvisoPrivacidadArchivoDto.id != 0) {
@@ -207,6 +216,7 @@ export class AvisoPrivacidadComponent {
     this.openFileModal('archivo');
   }
 
+  // Seleccionar archivo
   onFileSelect(event: any): void {
 
     if (event && event.currentFiles && event.currentFiles.length > 0) {
@@ -229,25 +239,59 @@ export class AvisoPrivacidadComponent {
     }
   }
 
-  isFormValid(value: string): boolean {
+  // Obtener archivo de aviso de privaciad por id
+  getAvisoPrivacidadArchivo(id: number, nuevo: boolean): void {
 
-    if (value == 'archivo') {
-      if (this.EsNuevo && this.selectedFile != null && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0) {
-        return false;
-      } else if(!this.EsNuevo && this.createAvisoPrivacidadArchivoDto.id != 0 && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0){
-        return false;
-      }else{
-        return true;
-      }
-    } else {
-      if (this.createAvisoPrivacidadDto.nombreAvisoPrivacidad.length > 0) {
-        return false;
-      } else {
-        return true;
-      }
-    }
+    // if (id != 0 && !nuevo) {
+
+      this.avisoPrivacidadService.getAvisoPrivacidadArchivo(id).subscribe((response) => {
+
+        if (response.success && response.data) {
+          // console.log(response.data);
+          this.createAvisoPrivacidadArchivoDto.id = response.data.id;
+          this.createAvisoPrivacidadArchivoDto.nombreArchivo = response.data.nombreArchivo;
+          if(response.data.url.length > 0){
+            const blob = this.base64ToBlob(response.data.url, 'application/pdf');
+            const url = URL.createObjectURL(blob);
+            this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url); // Esto ahora usará un URL seguro
+            this.EsNuevo = false;
+          }
+          this.openFileModal('archivo');
+        }
+
+      });
+
+    // } else {
+    //   this.createAvisoPrivacidadDto.id = 0;
+    //   this.createAvisoPrivacidadDto.nombreAvisoPrivacidad = '';
+    //   this.openFileModal('archivo');
+    // }
 
   }
+
+  // Alerta de confirmación para eliminación de archivo
+  confirmDeleteDocumentArchivo(event: Event, id: number) {
+
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: '¿Quieres eliminar este aviso de privacidad?',
+      header: 'Confirmación de eliminación',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: "p-button-danger p-button-text",
+      rejectButtonStyleClass: "p-button-text p-button-text",
+      acceptIcon: "none",
+      rejectIcon: "none",
+
+      accept: () => {
+        this.deleteAvisoPrivacidadArchivo(id);
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Cancelado', detail: 'Has cancelado' });
+      }
+    });
+  }
+  // Aviso de privacidad archivo
+
 
   // Método para guardar el archivo
   saveFile(): void {
@@ -301,37 +345,29 @@ export class AvisoPrivacidadComponent {
 
   }
 
+  // Validación de boton de guardar
+  isFormValid(value: string): boolean {
 
-  getAvisoPrivacidadArchivo(id: number, nuevo: boolean): void {
-
-    // if (id != 0 && !nuevo) {
-
-      this.avisoPrivacidadService.getAvisoPrivacidadArchivo(id).subscribe((response) => {
-
-        if (response.success && response.data) {
-          // console.log(response.data);
-          this.createAvisoPrivacidadArchivoDto.id = response.data.id;
-          this.createAvisoPrivacidadArchivoDto.nombreArchivo = response.data.nombreArchivo;
-          if(response.data.url.length > 0){
-            const blob = this.base64ToBlob(response.data.url, 'application/pdf');
-            const url = URL.createObjectURL(blob);
-            this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url); // Esto ahora usará un URL seguro
-            this.EsNuevo = false;
-          }
-          this.openFileModal('archivo');
-        }
-
-      });
-
-    // } else {
-    //   this.createAvisoPrivacidadDto.id = 0;
-    //   this.createAvisoPrivacidadDto.nombreAvisoPrivacidad = '';
-    //   this.openFileModal('archivo');
-    // }
+    if (value == 'archivo') {
+      if (this.EsNuevo && this.selectedFile != null && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0) {
+        return false;
+      } else if(!this.EsNuevo && this.createAvisoPrivacidadArchivoDto.id != 0 && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0){
+        return false;
+      }else{
+        return true;
+      }
+    } else {
+      if (this.createAvisoPrivacidadDto.nombreAvisoPrivacidad.length > 0) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
   }
-
-  base64ToBlob(base64: string, mimeType: string): Blob {
+  
+  // conversion de base64 para archivos
+  private base64ToBlob(base64: string, mimeType: string): Blob {
     const byteCharacters = atob(base64);
     const byteArrays: Uint8Array[] = [];
 
@@ -344,30 +380,9 @@ export class AvisoPrivacidadComponent {
     return new Blob(byteArrays, { type: mimeType });
   }
 
-
-  confirmDeleteDocumentArchivo(event: Event, id: number) {
-
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: '¿Quieres eliminar este aviso de privacidad?',
-      header: 'Confirmación de eliminación',
-      icon: 'pi pi-info-circle',
-      acceptButtonStyleClass: "p-button-danger p-button-text",
-      rejectButtonStyleClass: "p-button-text p-button-text",
-      acceptIcon: "none",
-      rejectIcon: "none",
-
-      accept: () => {
-        this.deleteAvisoPrivacidadArchivo(id);
-      },
-      reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Cancelado', detail: 'Has cancelado' });
-      }
-    });
-  }
-
-  deleteAvisoPrivacidadArchivo(id: number) {
-    this.avisoPrivacidadService.deleteAvisoPrivacidadArchivo(id).subscribe((response) => {
+  // Eliminar aviso de privacidad 
+  private deleteAvisoPrivacidad(id: number) {
+    this.avisoPrivacidadService.deleteAvisoPrivacidad(id).subscribe((response) => {
 
       if (response.success) {
         this.messageService.add({ severity: 'info', summary: 'Eliminado', detail: 'Aviso de privacidad ha sido eliminado' });
@@ -379,11 +394,18 @@ export class AvisoPrivacidadComponent {
     });
   }
 
-  toggleIcon(documento: any): void {
-    documento.icon = 
-      documento.icon === 'pi pi-chevron-right' ? 
-      'pi pi-chevron-down' : 
-      'pi pi-chevron-right';
+  // Eliminar aviso de privacidad archivo
+  private deleteAvisoPrivacidadArchivo(id: number) {
+    this.avisoPrivacidadService.deleteAvisoPrivacidadArchivo(id).subscribe((response) => {
+
+      if (response.success) {
+        this.messageService.add({ severity: 'info', summary: 'Eliminado', detail: 'Aviso de privacidad ha sido eliminado' });
+        this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al eliminar Aviso de privacidad' });
+        console.error('Error deleting document:', response.message);
+      }
+    });
   }
 
 }

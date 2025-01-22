@@ -56,7 +56,6 @@ export class ObrasComponent {
 
   ngOnInit(): void {
     this.getAllObras();
-
   }
 
   // Obtener lista de obras

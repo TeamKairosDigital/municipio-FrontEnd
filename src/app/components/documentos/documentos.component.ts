@@ -157,7 +157,6 @@ export class DocumentosComponent {
     ];
   }
 
-
   onChange(event: any, filtro: string): void {
 
     switch (filtro) {
@@ -171,7 +170,6 @@ export class DocumentosComponent {
 
     this.getDocuments(this.DocumentosFiltros);
   }
-
 
   pageChange(event: any) {
     this.first = event.first;
@@ -241,23 +239,6 @@ export class DocumentosComponent {
     // }
   }
 
-
-
-  // getFileBase64(id: number): void {
-  //   this.spinner = true;
-  //   this.documentosService.getFileBase64(id).subscribe({
-  //     next: (response) => {
-  //       const base64 = response.data?.base64;
-  //       this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`data:application/pdf;base64,${base64}`);
-  //       this.spinner = false;
-  //     },
-  //     error: (err) => {
-  //       console.error('Error fetching file base64', err);
-  //       this.spinner = false;
-  //     }
-  //   });
-  // }
-
   getFileBase64(id: number): void {
     this.spinner = true;
     this.documentosService.getFileBase64(id).subscribe({
@@ -289,8 +270,6 @@ export class DocumentosComponent {
   
     return new Blob(byteArrays, { type: mimeType });
   }
-  
-  
 
   hideDialog() {
     this.fileDialog = false;
@@ -304,7 +283,6 @@ export class DocumentosComponent {
     }
 
   }
-
 
   onFileSelect(event: any): void {
 
@@ -385,7 +363,6 @@ export class DocumentosComponent {
     });
   }
 
-
   verArchivo() {
     // const url = this.router.createUrlTree(['/verArchivo', { id: this.archivoSeleccionado.IdArchivo }]).toString();
     // window.open(url, '_blank');
@@ -405,5 +382,20 @@ export class DocumentosComponent {
     );
     window.open(url, '_blank');
   }
+
+  // getFileBase64(id: number): void {
+  //   this.spinner = true;
+  //   this.documentosService.getFileBase64(id).subscribe({
+  //     next: (response) => {
+  //       const base64 = response.data?.base64;
+  //       this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`data:application/pdf;base64,${base64}`);
+  //       this.spinner = false;
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching file base64', err);
+  //       this.spinner = false;
+  //     }
+  //   });
+  // }
 
 }

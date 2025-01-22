@@ -24,6 +24,8 @@ export class SideBarComponent {
   checked: boolean = false;
   sidebarVisible: boolean = false;
   user: UserLS;
+  name: string = '';
+  municipio: string = '';
 
   constructor(
     private router: Router,
@@ -41,6 +43,8 @@ export class SideBarComponent {
   ngOnInit() {
     // Cargar el estado del tema desde el localStorage al iniciar el componente
     const savedTheme = localStorage.getItem('theme');
+    this.name = this.storageService.getItem('username') || '';
+    this.municipio = this.storageService.getItem('mombreMunicipio') || '';
 
     // Si está guardado en localStorage y es el tema oscuro, marcar el switch como activo
     if (savedTheme === 'arya-blue') {
