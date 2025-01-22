@@ -22,7 +22,8 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');
     localStorage.removeItem('mombreMunicipio');
     localStorage.removeItem('municipality_id');
     localStorage.removeItem('access_token');
