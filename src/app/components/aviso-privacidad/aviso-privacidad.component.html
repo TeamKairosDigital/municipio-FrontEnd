@@ -62,14 +62,15 @@
             <tr>
                 <td colspan="7">
                     <div class="p-1">
-                        <div class="my-3">
+                        <div class="my-3" *ngIf="documento.archivos.length < 2">
                             <p-button label="Agregar Archivo" icon="pi pi-plus cursor-pointer" severity="primary"
-                                [outlined]="true" (onClick)="openModalArchivo(documento.id)" />
+                                [outlined]="true" (onClick)="openModalArchivo(documento.id, documento.archivos)"/>
                         </div>
                         <p-table [value]="documento.archivos" dataKey="id">
                             <ng-template pTemplate="header">
                                 <tr>
                                     <th style="width:50%">Nombre</th>
+                                    <th>Tipo de archivo</th> 
                                     <th style="width:25%">fechaCreacion</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -77,6 +78,7 @@
                             <ng-template pTemplate="body" let-archivos>
                                 <tr>
                                     <td>{{ archivos.nombreArchivo }}</td>
+                                    <td>{{ archivos.tipo == 1 ? 'Simplificado' : 'Integral' }}</td>
                                     <td>{{ archivos.fechaCreacion }}</td>
                                     <td>
                                         <div class="flex justify-content-center flex-wrap">
@@ -136,9 +138,18 @@
                 <input id="disabled-input" type="text" [(ngModel)]="this.createAvisoPrivacidadArchivoDto.nombreArchivo"
                     pInputText />
             </div>
+            
+            <div class="card my-4" *ngIf="EsNuevo">
+                <p-dropdown 
+                    [options]="tipo" 
+                    [(ngModel)]="this.createAvisoPrivacidadArchivoDto.tipo" 
+                    optionLabel="nombre"
+                    optionValue="id"
+                    placeholder="Seleccionar el tipo" />
+            </div>
 
-            <div *ngIf="EsNuevo">
-                <label for="name">Archivo PDF:</label>
+            <div *ngIf="EsNuevo" class="flex">
+                <label for="name" class="my-auto mr-2">Archivo PDF:</label>
                 <p-fileUpload mode="basic" chooseLabel="Selecciona tu archivo" chooseIcon="pi pi-upload" name="demo[]"
                     maxFileSize="20000000" accept=".pdf" (onSelect)="onFileSelect($event)" customUpload="true" />
             </div>

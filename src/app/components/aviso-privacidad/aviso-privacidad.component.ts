@@ -44,6 +44,7 @@ export class AvisoPrivacidadComponent {
   createAvisoPrivacidadArchivoDto: createAvisoPrivacidadArchivoDto = {
     id: 0,
     nombreArchivo: '',
+    tipo: 0,
     nombreArchivoOriginal: '',
     avisoPrivacidadId: 0,
     archivo: null
@@ -59,6 +60,8 @@ export class AvisoPrivacidadComponent {
 
   EsNuevo: boolean = false;
 
+  tipo: { id: number; nombre: string; }[] = [];
+
   constructor(
     private avisoPrivacidadService: AvisoPrivacidadService,
     private confirmationService: ConfirmationService,
@@ -69,6 +72,17 @@ export class AvisoPrivacidadComponent {
 
   ngOnInit() {
     this.getListAvisoPrivacidad(this.filterAvisoPrivacidadDto);
+
+    this.tipo = [
+      {
+        id: 1,
+        nombre: 'Simplificado',
+      },
+      {
+        id: 2,
+        nombre: 'Integral',
+      }
+    ]
   }
 
   // Tabla
@@ -195,7 +209,7 @@ export class AvisoPrivacidadComponent {
 
   // Aviso de privacidad archivo
   // Abrir modal para formulario
-  openModalArchivo(id: number) {
+  openModalArchivo(id: number, archivos: createAvisoPrivacidadArchivoDto[]): void {
 
     // if (this.createAvisoPrivacidadArchivoDto.id != 0) {
     //   this.openFileModal('archivo');
@@ -207,6 +221,23 @@ export class AvisoPrivacidadComponent {
     // }
     // this.createAvisoPrivacidadArchivoDto.avisoPrivacidadId = id;
     // this.openFileModal('archivo');
+
+    if (archivos.length > 0) {
+      archivos.forEach((archivo) => {
+        this.tipo = this.tipo.filter((tipo) => tipo.id !== archivo.tipo);
+      });
+    }else{
+      this.tipo = [
+        {
+          id: 1,
+          nombre: 'Simplificado',
+        },
+        {
+          id: 2,
+          nombre: 'Integral',
+        }
+      ];
+    }
 
     this.selectedFile = null;
     this.createAvisoPrivacidadArchivoDto.id = 0;
@@ -321,7 +352,7 @@ export class AvisoPrivacidadComponent {
       // }
     }else{
       if (this.selectedFile) {
-
+debugger;
         this.avisoPrivacidadService.createAvisoPrivacidadArchivo(this.createAvisoPrivacidadArchivoDto).subscribe({
           next: (response) => {
             // if(response)
@@ -349,7 +380,7 @@ export class AvisoPrivacidadComponent {
   isFormValid(value: string): boolean {
 
     if (value == 'archivo') {
-      if (this.EsNuevo && this.selectedFile != null && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0) {
+      if (this.EsNuevo && this.selectedFile != null && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0 && this.createAvisoPrivacidadArchivoDto.tipo != 0) {
         return false;
       } else if(!this.EsNuevo && this.createAvisoPrivacidadArchivoDto.id != 0 && this.createAvisoPrivacidadArchivoDto.nombreArchivo.length > 0){
         return false;

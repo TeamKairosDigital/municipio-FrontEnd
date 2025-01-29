@@ -43,6 +43,7 @@ export class AvisoPrivacidadService {
 
     const formData = new FormData();
     formData.append('nombreArchivo', data.nombreArchivo);
+    formData.append('tipo', data.tipo.toString());
     formData.append('nombreArchivoOriginal', data.nombreArchivoOriginal);
     formData.append('avisoPrivacidadId', data.avisoPrivacidadId.toString());
     formData.append('archivo', data.archivo);
