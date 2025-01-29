@@ -46,6 +46,7 @@ export class DocumentosComponent {
     { value: '2024', viewValue: '2024' },
     { value: '2025', viewValue: '2025' },
     { value: '2026', viewValue: '2026' },
+    { value: '2027', viewValue: '2027' },
   ];
 
   selectedYear: yearsDto | any;
