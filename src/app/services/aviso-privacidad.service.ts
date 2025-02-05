@@ -7,6 +7,8 @@ import { filterAvisoPrivacidadDto } from '../models/filterAvisoPrivacidadDto';
 import { createAvisoPrivacidadDto } from '../models/createAvisoPrivacidadDto';
 import { createAvisoPrivacidadArchivoDto } from '../models/createAvisoPrivacidadArchivo';
 import { environment } from '../../environments/environment';
+import { OtrosDocumentosDto } from '../models/otrosDocumentos.dto';
+import { createOtroDocumentoDto } from '../models/createOtroDocumento.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -64,5 +66,46 @@ export class AvisoPrivacidadService {
   }
 
 
+  // Obtener lista de otrosDocumentos
+  getOtrosDocumentos(): Observable<ApiResponse<OtrosDocumentosDto[]>> {
+    return this.http.get<ApiResponse<OtrosDocumentosDto[]>>(`${this.apiUrl}/getOtrosDocumentos`);
+  }
+
+  // Obtener una documento por ID
+  findOneOtroDocumento(id: number): Observable<ApiResponse<createOtroDocumentoDto>> {
+    return this.http.get<ApiResponse<createOtroDocumentoDto>>(`${this.apiUrl}/findOneOtroDocumento/${id}`);
+  }
+
+  // Crear una nueva documento
+  createOtroDocumento(data: createOtroDocumentoDto): Observable<ApiResponse<any>> {
+
+    const formData = new FormData();
+    formData.append('nombreArchivo', data.nombreArchivo);
+    formData.append('nombre', data.nombre);
+    formData.append('archivo', data.archivo);
+    formData.append('municipality_id', data.municipality_id.toString());
+    formData.append('UsuarioCreacionId', data.usuarioCreacion_Id.toString());
+
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/createOtroDocumento`, formData);
+  }
+
+  // Actualizar una documento
+  updateOtroDocumento(data: createOtroDocumentoDto): Observable<ApiResponse<any>> {
+
+    const formData = new FormData();
+    formData.append('id', data.id ? data.id.toString() : '0');
+    formData.append('nombreArchivo', data.nombreArchivo);
+    formData.append('nombre', data.nombre);
+    formData.append('archivo', data.archivo);
+    formData.append('municipality_id', data.municipality_id.toString());
+    formData.append('UsuarioCreacionId', data.usuarioCreacion_Id.toString());
+
+    return this.http.put<ApiResponse<any>>(`${this.apiUrl}/updateOtroDocumento`, formData);
+  }
+
+  // Eliminar una documento
+  deleteOtroDocumento(id: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/deleteOtroDocumento/${id}`);
+  }
 
 }

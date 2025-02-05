@@ -5,6 +5,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AvisoPrivacidadComponent } from './components/aviso-privacidad/aviso-privacidad.component';
 import { ObrasComponent } from './components/obras/obras.component';
 import { AuthGuard } from './guards/auth.guard';
+import { OtrosDocumentosComponent } from './components/otros-documentos/otros-documentos.component';
 
 export const routes: Routes = [
     { path: 'loginAdmin', component: LoginComponent }, // Acceso directo al login
@@ -12,5 +13,6 @@ export const routes: Routes = [
     { path: 'verArchivo', component: FileViewComponent, canActivate: [AuthGuard] },
     { path: 'avisoPrivacidad', component: AvisoPrivacidadComponent, canActivate: [AuthGuard] },
     { path: 'obras', component: ObrasComponent, canActivate: [AuthGuard] },
+    { path: 'otrosDocumentos', component: OtrosDocumentosComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: 'loginAdmin', pathMatch: 'full' } // Wildcard redirige al componente por defecto
 ];

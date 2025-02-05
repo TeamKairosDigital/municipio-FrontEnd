@@ -111,7 +111,8 @@ export class DocumentosComponent {
 
     this.DocumentosFiltros = {
       year: this.currentYear,
-      ley: '-1'
+      ley: '-1',
+      documento: ''
     }
   }
 
@@ -158,6 +159,12 @@ export class DocumentosComponent {
     ];
   }
 
+  onInputChange(value: string) {
+    if (value.length >= 5 || value.length == 0) { // Ejecuta la función después de 3 caracteres
+      this.onChange(value, 'documento');
+    }
+  }
+
   onChange(event: any, filtro: string): void {
 
     switch (filtro) {
@@ -166,6 +173,9 @@ export class DocumentosComponent {
         break;
       case 'leyes':
         this.DocumentosFiltros.ley = event.value.value;
+        break
+      case 'documento':
+        this.DocumentosFiltros.documento = event;
         break
     }
 

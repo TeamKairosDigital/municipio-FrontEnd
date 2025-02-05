@@ -16,6 +16,10 @@
                 </div>
 
                 <div class="flex align-items-center justify-content-center w-6">
+                    <div class="my-3 md:my-0 mr-3 lg:mr-0" >
+                        <label for="inventoryStatus" class="m-2">Buscar por documento:</label>
+                        <input type="text" pInputText placeholder="Balance...." [(ngModel)]="this.DocumentosFiltros.documento" (ngModelChange)="onInputChange($event)" />
+                    </div>
                     <div>
                         <label for="inventoryStatus" class="m-2">Año:</label>
                         <p-dropdown [options]="years" [(ngModel)]="selectedYear" optionLabel="viewValue"

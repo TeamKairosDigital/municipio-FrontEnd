@@ -1,0 +1,93 @@
+<app-side-bar></app-side-bar>
+    <div class="card text-center">
+        <h2 class="font-size: 4rem">Otros documentos</h2>
+    </div>
+
+    <p-table [value]="list" dataKey="id" [paginator]="true" [rows]="5" [first]="first"
+    [showCurrentPageReport]="true" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-striped"
+    [sortOrder]="-1" currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} datos"
+    (onPage)="pageChange($event)" [rowsPerPageOptions]="[5, 10, 15]">
+
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-around">
+                <div>
+                    <h3 class="m-0">Lista otros documentos</h3>
+                </div>
+                <div *ngIf="this.list.length < 3">
+                    <i class="pi pi-file-plus cursor-pointer" style="font-size: 2rem"
+                        (click)="openModal()"></i>
+                </div>
+            </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width:30%" pSortableColumn="nombre">Título <p-sortIcon field="nombre" />
+                <th style="width:10%" pSortableColun="fechaCreacion">fechaCreacion <p-sortIcon field="fechaCreacion" />
+                <th style="width:10%" class="align-content-center">Acciones</th>
+            </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-documento>
+            <tr>
+                <td>{{ documento.nombre }}</td>
+                <td>{{ documento.fechaCreacion }}</td>
+                <td>
+                    <div class="flex justify-content-center flex-wrap">
+                        <div class="px-2">
+                            <p-button icon="pi pi-pen-to-square" [outlined]="true"
+                                (onClick)="openModal(documento.id)" />
+                        </div>
+                        <div class="px-2">
+                            <p-button icon="pi pi-trash" severity="danger" [outlined]="true"
+                                (onClick)="confirmDelete($event, documento.id)" />
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-confirmDialog />
+
+    <p-dialog [(visible)]="Dialog" [style]="{ width: '950px' }" header="Detalle de archivo" [modal]="true"
+    styleClass="p-fluid">
+        <ng-template pTemplate="content">
+
+            <div class="field">
+                <label for="name">Título:</label>
+                <input id="disabled-input" type="text" [(ngModel)]="this.create.nombre"
+                    pInputText maxlength="200"/>
+            </div>
+
+            <div *ngIf="!fileUrl">
+                <p-fileUpload mode="basic" chooseLabel="Selecciona tu archivo" chooseIcon="pi pi-upload" name="demo[]"
+                    maxFileSize="20000000" accept=".pdf" (onSelect)="onFileSelect($event)" customUpload="true" />
+            </div>
+
+            <div *ngIf="fileUrl" class="mt-4">
+                <div class="w-full my-5 flex align-items-center justify-content-around">
+                    <p-button label="Eliminar" icon="pi pi-trash" severity="danger" [outlined]="true"
+                        (onClick)="confirmDeleteArchivo($event)" />
+                </div>
+
+                <embed [src]="fileUrl" type="application/pdf" width="100%" height="900px">  
+            </div>
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-button label="Cerrar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+            <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="createDocument()"
+                [disabled]="botonValid()" />
+        </ng-template>
+    </p-dialog>
+
+    <p-toast />
+
+    <div *ngIf="spinner" class="overlay">
+        <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+            animationDuration=".5s" />
+    </div>
