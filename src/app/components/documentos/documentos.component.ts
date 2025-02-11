@@ -325,8 +325,8 @@ export class DocumentosComponent {
         next: (response) => {
           // if(response)
           this.fileDialog = false;
-
-          this.getDocuments(this.selectedYear.value);
+          this.DocumentosFiltros.year = this.selectedYear.value;
+          this.getDocuments(this.DocumentosFiltros);
           this.messageService.add({ severity: 'success', summary: 'Guardado', detail: 'Su archivo ha sido guardado correctamente' });
           // console.log('Archivo guardado exitosamente:', response);
         },
@@ -365,7 +365,8 @@ export class DocumentosComponent {
     this.documentosService.deleteDocument(this.archivoSeleccionado.IdArchivo).subscribe({
       next: () => {
         this.messageService.add({ severity: 'info', summary: 'Eliminado', detail: 'Su archivo ha sido eliminado' });
-        this.getDocuments(this.selectedYear.value);
+        this.DocumentosFiltros.year = this.selectedYear.value;
+        this.getDocuments(this.DocumentosFiltros);
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al eliminar su archivo' });
